@@ -23,27 +23,33 @@ all_labels = planets_labels+moons_labels+asteroids_labels
 all_densities = np.concatenate([planets_densities, moons_densities, asteroids_densities])
 all_log_radii = np.concatenate([planets_log_radii, moons_log_radii, asteroids_log_radii])
 
+planets_radii = 10**planets_log_radii
+moons_radii = 10**moons_log_radii
+asteroids_radii = 10**asteroids_log_radii
+all_radii = 10**all_log_radii
+
 
 fig, ax = plt.subplots()
+ax.set_yscale('log')
+
 # Major ticks every 1, minor ticks every 0.1
 ax.xaxis.set_major_locator(MultipleLocator(1))
 ax.xaxis.set_minor_locator(MultipleLocator(0.1))
-ax.yaxis.set_major_locator(MultipleLocator(1))
-ax.yaxis.set_minor_locator(MultipleLocator(0.1))
 ax.tick_params(which='minor', length=3)
 ax.tick_params(which='major', length=6)
 ax.grid(which='major', alpha=0.5)
 ax.grid(which='minor', alpha=0.2, linestyle=':')
 ax.set_xlim(0, 6)
+ax.set_title(label="Log–linear graph of planets, moons and asteroids radius against density.", loc='center')
 
 # Plot the points
-ax.plot(planets_densities, planets_log_radii, '.g')
-ax.plot(moons_densities, moons_log_radii, '.r')
-ax.plot(asteroids_densities, asteroids_log_radii, '.b')
+ax.plot(planets_densities, planets_radii, '.g')
+ax.plot(moons_densities, moons_radii, '.r')
+ax.plot(asteroids_densities, asteroids_radii, '.b')
 
 # NOW add annotations to the axes
 k = 0
-for x, y in zip(all_densities, all_log_radii):
+for x, y in zip(all_densities, all_radii):
     label = "{:.2f}".format(y)
     ax.annotate(all_labels[k],  # Changed from plt.annotate to ax.annotate
                 (x, y),
