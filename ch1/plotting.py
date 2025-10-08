@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot  as plt
+from matplotlib.ticker import MultipleLocator
 # two arrays
 x = np.array([0.053, 0.042, 0.029, 0.025, 0.017, 0.010, 0.008, 0.002], float)
 F = np.array([3.55, 2.96, 2.31, 2.01, 1.50, 1.02, 0.697, 0.226],float)
@@ -22,25 +23,35 @@ all_labels = planets_labels+moons_labels+asteroids_labels
 all_densities = np.concatenate([planets_densities, moons_densities, asteroids_densities])
 all_log_radii = np.concatenate([planets_log_radii, moons_log_radii, asteroids_log_radii])
 
-k=0
-for x,y in zip(all_densities,
-               all_log_radii):
 
-    label = "{:.2f}".format(y)
-    plt.annotate(all_labels[k], # this is the text
-                 (x,y), # these are the coordinates to position the label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
-    k+=1
-
-
+fig, ax = plt.subplots()
+# Major ticks every 1, minor ticks every 0.1
+ax.xaxis.set_major_locator(MultipleLocator(1))
+ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+ax.yaxis.set_major_locator(MultipleLocator(1))
+ax.yaxis.set_minor_locator(MultipleLocator(0.1))
+ax.tick_params(which='minor', length=3)
+ax.tick_params(which='major', length=6)
+ax.grid(which='major', alpha=0.5)
+ax.grid(which='minor', alpha=0.2, linestyle=':')
+ax.set_xlim(0, 6)
 
 # Plot the points
-plt.plot(planets_densities,planets_log_radii,'.g')
-plt.plot(moons_densities,moons_log_radii,'.r')
-plt.plot(asteroids_densities,asteroids_log_radii,'.b')
+ax.plot(planets_densities, planets_log_radii, '.g')
+ax.plot(moons_densities, moons_log_radii, '.r')
+ax.plot(asteroids_densities, asteroids_log_radii, '.b')
 
-plt.xlabel("Density/kg m^-3")
-plt.ylabel("Radius log(10)")
+# NOW add annotations to the axes
+k = 0
+for x, y in zip(all_densities, all_log_radii):
+    label = "{:.2f}".format(y)
+    ax.annotate(all_labels[k],  # Changed from plt.annotate to ax.annotate
+                (x, y),
+                textcoords="offset points",
+                xytext=(0, 5),
+                ha='center')
+    k += 1
+
+ax.set_xlabel("Density/10^3 kg m^-3")
+ax.set_ylabel("Radius/km")
 plt.show()
