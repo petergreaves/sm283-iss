@@ -28,18 +28,17 @@ moons_radii = 10**moons_log_radii
 asteroids_radii = 10**asteroids_log_radii
 all_radii = 10**all_log_radii
 
-
 fig, ax = plt.subplots()
 ax.set_yscale('log')
 
-# Major ticks every 1, minor ticks every 0.1
+# Major x-axis ticks every 1, minor ticks every 0.1
 ax.xaxis.set_major_locator(MultipleLocator(1))
 ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 ax.tick_params(which='minor', length=3)
 ax.tick_params(which='major', length=6)
 ax.grid(which='major', alpha=0.5)
 ax.grid(which='minor', alpha=0.2, linestyle=':')
-ax.set_xlim(0, 6)
+ax.set_xlim(0, round(np.max(all_densities)))
 ax.set_title(label="Log–linear graph of planets, moons and asteroids radius against density.", loc='center')
 
 # Plot the points
