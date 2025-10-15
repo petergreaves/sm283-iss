@@ -1,13 +1,34 @@
 import numpy as np
+from sys import argv
 import matplotlib.pyplot  as plt
+import argparse
 from matplotlib.ticker import MultipleLocator
-# two arrays
-x = np.array([0.053, 0.042, 0.029, 0.025, 0.017, 0.010, 0.008, 0.002], float)
-F = np.array([3.55, 2.96, 2.31, 2.01, 1.50, 1.02, 0.697, 0.226],float)
 
-planets_densities = np.array([5.43,	5.20,	5.51,	3.34,	3.93,	1.33,	0.69,	1.32,	1.64,	1.86], float)
-planets_radii = np.array([2440,6052,6371,1738,3390,69910,58230,25360,24620,1187],float)
-planets_labels = ["Me-T","Ve-T","Ea-T","Mo-T","Ma-T","Ju-G","Sa=G","Ur-I","Ne-I","Pl-K"]
+
+parser = argparse.ArgumentParser("plotter")
+parser.add_argument("--include_tma", help="whether to include TMA 1 planets a and b.")
+args = parser.parse_args()
+
+
+planets_densities = np.array([5.43,5.20,5.51,3.34,
+                              3.93,1.33,0.69,1.32,
+                              1.64,	1.86],float)
+
+planets_radii = np.array([2440,6052,6371,1738,
+                          3390,69910,58230,25360,
+                          24620,1187],float)
+
+planets_labels = ["Me-T","Ve-T","Ea-T","Mo-T",
+                  "Ma-T","Ju-G","Sa-G","Ur-G",
+                  "Ne-G","Pl-K"]
+
+
+if args.include_tma:
+    # then include A and B from TMA 1
+    planets_densities = np.concatenate([planets_densities, np.array([1.25,5.32], float)])
+    planets_radii=np.concatenate([planets_radii, np.array([(1.31*10**5)/2, 5550/2],float)])
+    planets_labels =planets_labels+["A-G", "B-T"]
+
 
 moons_densities = np.array([1.90,1.76,3.53,
                             2.99,1.94,1.85,1.15,
@@ -15,19 +36,21 @@ moons_densities = np.array([1.90,1.76,3.53,
                             1.88,1.09,1.20,1.70,
                             1.40,1.71,1.63,1.20,
                             2.05,1.20,1.70], float)
+                            
 moons_radii = np.array([11.1,6.2,1821,
                         1565,2634,2403,199,
                         249,530,560,764,
                         2575,718,236,579,
                         585,789,761,209,
                         1353,170,606],float)
+
 moons_labels = ["Ph","De","Io","Eu","Ga","Ca","Mi","En","Te","Di","Rh",	"Ti","Ia","Mr","Ar","Um","Tt","Ob","Pr","Tr", "Nr","Ch"]
 
-asteroids_densities = np.array([2.50,2.60,1.30,2.67,1.90,5.50,3.46,2.16], float)
+asteroids_densities = np.array([2.50,2.60,1.30,2.67,1.90,3.40,3.46,2.16], float)
 asteroids_radii = np.array([6.1,15.8,26.4,9.69,0.32,50,263,473], float)
 asteroids_labels = ["Ga",	"Id",	"Ma",	"Er",	"It",	"Lu",	"Vs",	"Ce"]
 #print(len(asteroids_radii_native)==len(asteroids_log_radii) and len(moons_log_radii)==len(moons_radii_native) and len(planets_log_radii)==len(planets_radii_native))
-print(str(len(moons_radii)), ",", str(len(moons_densities)), ",", str(len(moons_labels)))
+#print(str(len(moons_radii)), ",", str(len(moons_densities)), ",", str(len(moons_labels)))
 
 all_labels = planets_labels+moons_labels+asteroids_labels
 all_densities = np.concatenate([planets_densities, moons_densities, asteroids_densities])
@@ -45,7 +68,7 @@ ax.tick_params(which='major', length=6)
 ax.grid(which='major', alpha=0.5)
 ax.grid(which='minor', alpha=0.2, linestyle=':')
 ax.set_xlim(0, round(np.max(all_densities)))
-ax.set_title(label="Log–linear graph of planets, moons and asteroids radius against density.", loc='center')
+ax.set_title(label="Planets, moons and asteroids radius against density.", loc='center')
 
 # Plot the points
 ax.plot(planets_densities, planets_radii,'.g')
